@@ -1,0 +1,9 @@
+{application,iclean,
+             [{applications,[kernel,stdlib,elixir,logger,runtime_tools,jason,
+                             postgrex,ecto_sql]},
+              {description,"iclean"},
+              {modules,['Elixir.IClean','Elixir.IClean.Application',
+                        'Elixir.IClean.DataCase','Elixir.IClean.Repo']},
+              {registered,[]},
+              {vsn,"0.1.0"},
+              {mod,{'Elixir.IClean.Application',[]}}]}.
