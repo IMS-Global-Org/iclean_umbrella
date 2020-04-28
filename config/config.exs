@@ -14,6 +14,11 @@ config :iclean,
   namespace: IClean,
   ecto_repos: [IClean.Repo]
 
+# Pow Auth
+config :iclean, :pow,
+  user: IClean.Users.User,
+  repo: IClean.Repo
+
 config :iclean_web,
   namespace: ICleanWeb,
   ecto_repos: [IClean.Repo],
