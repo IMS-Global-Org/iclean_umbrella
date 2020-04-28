@@ -19,6 +19,11 @@ config :iclean_web,
   ecto_repos: [IClean.Repo],
   generators: [context_app: :iclean]
 
+# Pow Auth
+config :iclean_web, :pow,
+  user: IClean.Users.User,
+  repo: IClean.Repo
+
 # Configures the endpoint
 config :iclean_web, ICleanWeb.Endpoint,
   url: [host: "localhost"],
@@ -34,11 +39,6 @@ config :logger, :console,
 
 # Use Jason for JSON parsing in Phoenix
 config :phoenix, :json_library, Jason
-
-# Pow Auth
-config :iclean_web, :pow,
-  user: IClean.Users.User,
-  repo: IClean.Repo
 
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.

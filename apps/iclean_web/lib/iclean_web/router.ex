@@ -7,7 +7,7 @@ defmodule ICleanWeb.Router do
   end
 
   pipeline :api_protected do
-    plug Pow.Plug.RequireAuthenticated, error_handler: MyAppWeb.APIAuthErrorHandler
+    plug Pow.Plug.RequireAuthenticated, error_handler: ICleanWeb.APIAuthErrorHandler
   end
 
   scope "/api", ICleanWeb do
