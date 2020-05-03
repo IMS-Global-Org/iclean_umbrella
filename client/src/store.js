@@ -5,11 +5,13 @@ import axiosMiddleware from 'redux-axios-middleware'
 import rootReducer from './reducers/index';
 import axios from 'axios';
 
-const options = { axios }
+const client = axios.create({
+  baseURL: 'http://localhost:4000/api/',
+  responseType: 'json',
+})
 
 const enhancers = compose(
-  //applyMiddleware(thunk, apiMiddleware(options)),
-  applyMiddleware(thunk, axiosMiddleware(options)),
+  applyMiddleware(thunk, axiosMiddleware(client)),
   window.devToolsExtension ? window.__REDUX_DEVTOOLS_EXTENSION__() : f => f
 )
 

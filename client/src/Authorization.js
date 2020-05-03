@@ -29,7 +29,6 @@ const Authorization = ({isAuthenticated, children, dispatch, ...rest}) => {
 }
 
 const mapStateToProps = (state) => {
-  console.log(state.auth.access_token,state.auth.renewal_token)
   return { 
     isAuthenticated: state.auth.access_token && state.auth.renewal_token,
   }
