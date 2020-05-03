@@ -11,7 +11,7 @@ defmodule ICleanWeb.RegistrationController do
     |> Pow.Plug.create_user(user_params)
     |> case do
       {:ok, _user, conn} ->
-        json(conn, %{data: %{access_token: conn.private[:api_access_token], renewal_token: conn.private[:api_renewal_token]}})
+        json(conn, %{access_token: conn.private[:api_access_token], renewal_token: conn.private[:api_renewal_token]})
 
       {:error, changeset, conn} ->
         errors = Changeset.traverse_errors(changeset, &ErrorHelpers.translate_error/1)
