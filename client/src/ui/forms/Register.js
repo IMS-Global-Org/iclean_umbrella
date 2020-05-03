@@ -1,44 +1,40 @@
 import React, {useState} from 'react'
 import { connect } from 'react-redux'
 import { useHistory } from 'react-router-dom'
-import { loginUser } from '../../reducers/auth'
-
+import { registerUser } from '../../reducers/auth'
+import { isEmpty } from 'lodash'
 
 const defaults = {
   email: '',
   password: '',
+  confirmation: '',
 }
 
-const LoginBase = ({isAuthenticated, dispatch, ...rest}) => {
+const RegisterBase = ({dispatch, ...rest}) => {
   const [state, setState] = useState({...defaults})
   const history = useHistory()
 
-  const onSubmit = e => {
+  const onSubmit = (e) => {
     e.preventDefault()
     if(hasValidInput()){
-      dispatch(loginUser(
+      dispatch(registerUser(
         state.email,
         state.password,
+        state.confirmation,
         history,
       ))
-    } else {
-      // TODO display flash message
     }
   }
 
-  const onChange = ({target: {name, value}}) => {
+  const hasValidInput = () => {
+    return Object.values(state).every(value => !isEmpty(value))
+  }
+
+  const onChange = ({target: {name, value}}) =>{
     setState(state => ({
       ...state,
       [name]: value,
     }))
-  }
-
-  const hasValidInput = () => {
-    const {email, password} = state
-    if(email && password){
-      return true
-    }
-    return false
   }
 
   return (
@@ -62,16 +58,20 @@ const LoginBase = ({isAuthenticated, dispatch, ...rest}) => {
         onChange={onChange}
       /><br/>
 
+      <label>Confirmation</label>
+      <input
+        type='password'
+        name='confirmation'
+        placeholder='Password Confirmation'
+        value={state.confirmation}
+        onChange={onChange}
+      /><br/>
+
       <input type='submit'/>
     </form>
   )
 }
 
-const mapStateToProps = (state, props) => {
-  return {
-    isAuthenticated: state.auth.isAuthenticated,
-  }
-}
+const Register = connect()(RegisterBase)
+export { Register }
 
-const Login = connect(mapStateToProps)(LoginBase)
-export { Login } 

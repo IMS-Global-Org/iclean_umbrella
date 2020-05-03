@@ -19,7 +19,6 @@ export const registerUser = (email, password, password_confirmation, history) =>
     axios.post(path, { user })
       .then( res => {
         dispatch({ type: REGISTER_USER, auth: res.data });
-        localStorage.setItem('token', res.data.renewal_token)
         history.push('/');
       })
       .catch( err => {
@@ -35,7 +34,8 @@ export const loginUser = (email, password, history) => {
     axios.post(path, { user })
       .then( res => {
         dispatch({ type: LOGIN_USER, auth: res.data });
-        history.push('/');
+        localStorage.setItem('token', res.data.renewal_token)
+        history.push('/basic');
       })
       .catch( err => {
         console.log(err.response.data)
@@ -44,27 +44,42 @@ export const loginUser = (email, password, history) => {
 }
 
 export const logoutUser = (history) => {
-  return dispatch => {
+  return (dispatch, getState) => {
     const path = `/api/session`
-    axios.delete(path)
+    const { access_token } = getState().auth
+
+    axios({
+      url: path,
+      method: 'POST',
+      headers: { 'Authorization': access_token }
+    })
       .then( res => {
         dispatch({ type: LOGOUT_USER });
-        history.push('/login');
+        localStorage.removeItem('token')
+        history.push('/auth/login');
       })
       .catch( err => {
         console.log(err.response.data)
       });
-    }
+  }
 }
 
 export const validateUser = (cb = f => f) => {
-  return (dispatch, getState) => {
+  return (dispatch) => {
     const path = `/api/session/renew`
     const token = localStorage.token
+
     if(token){
-      axios.post(path, {...getState().auth})
+      axios({
+        url: path,
+        method: 'POST',
+        headers: {
+          'Authorization': token,
+        },
+      })
         .then( res => {
           dispatch({ type: VALIDATE_USER, auth: res.data }) 
+          localStorage.setItem('token', res.data.renewal_token)
         })
         .catch(cb)
     }
@@ -91,7 +106,7 @@ const validateUserReducer = (state, action) => {
 
 // Default attributes
 const defaults = {
-  api_access_token: '',
+  access_token: '',
   renewal_token: '',
   isAuthenticated: function(){
     return this.api_access_token && this.renewal_token
