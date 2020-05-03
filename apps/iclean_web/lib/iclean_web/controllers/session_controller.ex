@@ -10,29 +10,41 @@ defmodule ICleanWeb.SessionController do
     |> Pow.Plug.authenticate_user(user_params)
     |> case do
       {:ok, conn} ->
-        json(conn, %{data: %{access_token: conn.private[:api_access_token], renewal_token: conn.private[:api_renewal_token]}})
+        json(conn, %{
+          access_token: conn.private[:api_access_token], 
+          renewal_token: conn.private[:api_renewal_token]
+        })
 
       {:error, conn} ->
         conn
         |> put_status(401)
-        |> json(%{error: %{status: 401, message: "Invalid email or password"}})
+        |> json(%{
+          status: 401, 
+          message: "Invalid email or password"
+        })
     end
   end
 
   @spec renew(Conn.t(), map()) :: Conn.t()
   def renew(conn, _params) do
     config = Pow.Plug.fetch_config(conn)
-
+    IO.inspect config
     conn
     |> APIAuthPlug.renew(config)
     |> case do
       {conn, nil} ->
         conn
         |> put_status(401)
-        |> json(%{error: %{status: 401, message: "Invalid token"}})
+        |> json(%{
+          status: 401,
+          message: "Invalid token"
+        })
 
       {conn, _user} ->
-        json(conn, %{data: %{access_token: conn.private[:api_access_token], renewal_token: conn.private[:api_renewal_token]}})
+        json(conn, %{
+          access_token: conn.private[:api_access_token],
+          renewal_token: conn.private[:api_renewal_token]
+        })
     end
   end
 
@@ -40,6 +52,6 @@ defmodule ICleanWeb.SessionController do
   def delete(conn, _params) do
     conn
     |> Pow.Plug.delete()
-    |> json(%{data: %{}})
+    |> json(%{})
   end
 end
