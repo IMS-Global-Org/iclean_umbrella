@@ -6,7 +6,9 @@ const loadUser = (state, action) => {
   return state
 }
 
-const defaults = {}
+const defaults = {
+  id: 21,
+}
 
 export const user = createReducer({...defaults}, {
   [LOAD_USER]: loadUser,

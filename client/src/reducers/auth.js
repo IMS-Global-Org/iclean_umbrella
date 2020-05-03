@@ -50,7 +50,7 @@ export const logoutUser = (history) => {
 
     axios({
       url: path,
-      method: 'POST',
+      method: 'DELETE',
       headers: { 'Authorization': access_token }
     })
       .then( res => {
@@ -65,7 +65,7 @@ export const logoutUser = (history) => {
 }
 
 export const validateUser = (cb = f => f) => {
-  return (dispatch) => {
+  return (dispatch, getState) => {
     const path = `/api/session/renew`
     const token = localStorage.token
 
@@ -108,9 +108,6 @@ const validateUserReducer = (state, action) => {
 const defaults = {
   access_token: '',
   renewal_token: '',
-  isAuthenticated: function(){
-    return this.api_access_token && this.renewal_token
-  },
 }
 
 // Actual Reducer

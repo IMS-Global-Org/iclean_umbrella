@@ -11,9 +11,9 @@ const Authorization = ({isAuthenticated, children, dispatch, ...rest}) => {
   const [loaded, setLoaded] = useState(false)
 
   const validateOnLoad = () => {
-    if(isAuthenticated)
+    if(isAuthenticated){
       setLoaded(true)
-    else {
+    } else {
       dispatch(validateUser(() => setLoaded(true)))
     }
   }
@@ -29,7 +29,10 @@ const Authorization = ({isAuthenticated, children, dispatch, ...rest}) => {
 }
 
 const mapStateToProps = (state) => {
-  return { isAuthenticated: state.auth.isAuthenticated() }
+  console.log(state.auth.access_token,state.auth.renewal_token)
+  return { 
+    isAuthenticated: state.auth.access_token && state.auth.renewal_token,
+  }
 }
 
 export default connect(mapStateToProps)(Authorization)
