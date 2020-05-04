@@ -11,6 +11,7 @@ const Authorization = ({isAuthenticated, children, dispatch, ...rest}) => {
   const [loaded, setLoaded] = useState(false)
 
   const validateOnLoad = () => {
+    console.log(`Validating Client Token: ${isAuthenticated ? 'false' : 'true'}`)
     if(isAuthenticated){
       setLoaded(true)
     } else {
@@ -20,7 +21,7 @@ const Authorization = ({isAuthenticated, children, dispatch, ...rest}) => {
   useEffect(validateOnLoad, [])
 
   const validateOnChange = () => {
-    if (!loaded)
+    if (!loaded && isAuthenticated)
       setLoaded(true)
   }
   useEffect(validateOnChange, [isAuthenticated])
@@ -28,9 +29,9 @@ const Authorization = ({isAuthenticated, children, dispatch, ...rest}) => {
   return loaded ? children : ''
 }
 
-const mapStateToProps = (state) => {
+const mapStateToProps = (state, props) => {
   return { 
-    isAuthenticated: state.auth.access_token && state.auth.renewal_token,
+    isAuthenticated: state.auth.access_token && state.auth.renewal_token
   }
 }
 
