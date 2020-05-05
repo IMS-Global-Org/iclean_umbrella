@@ -1,11 +1,18 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 import { Menu, Dropdown, Icon, Input } from 'semantic-ui-react'
+import styled from 'styled-components'
+
+const BasicMenu = styled(Menu)`
+  margin-left: 1rem;
+  margin-right: 1rem;
+`
+
 
 const BasicAppBar = ({...rest}) => {
 
   return (
-    <Menu secondary>
+    <BasicMenu secondary>
       <Dropdown item icon='bars' simple>
         <Dropdown.Menu>
 
@@ -62,7 +69,7 @@ const BasicAppBar = ({...rest}) => {
         />
       </Menu.Menu>
 
-    </Menu>
+    </BasicMenu>
   )
 }
 
