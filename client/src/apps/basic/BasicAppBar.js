@@ -1,39 +1,68 @@
 import React from 'react'
-import {
-  AppBar,
-  Toolbar,
-  IconButton,
-  Typography,
-  Button,
-} from '@material-ui/core'
-import MenuIcon from '@material-ui/icons/Menu'
-import { makeStyles } from '@material-ui/core/styles'
-
-const classes = makeStyles((theme) => ({
-  root: {
-    flexGrow: 1,
-  },
-  menuButton: {
-    marginRight: theme.spacing(2),
-  },
-  title: {
-    flexGrow: 1,
-  },
-}));
+import { Link } from 'react-router-dom'
+import { Menu, Dropdown, Icon, Input } from 'semantic-ui-react'
 
 const BasicAppBar = ({...rest}) => {
+
   return (
-    <AppBar position="static">
-      <Toolbar>
-        <IconButton edge="start" className={classes.menuButton} color="inherit" aria-label="menu">
-          <MenuIcon />
-        </IconButton>
-        <Typography variant="h6" className={classes.title}>
-          News
-        </Typography>
-        <Button color="inherit">Login</Button>
-      </Toolbar>
-    </AppBar>
+    <Menu secondary>
+      <Dropdown item icon='bars' simple>
+        <Dropdown.Menu>
+
+          <Dropdown.Item>
+            <Icon name='dropdown' />
+            <span className='text'>Settings</span>
+            <Dropdown.Menu>
+              <Dropdown.Item
+                as={Link}
+                to='/basic/settings/account'
+              >
+                Account
+              </Dropdown.Item>
+              <Dropdown.Item
+                as={Link}
+                to='/basic/settings/work_groups'
+              >
+                Work Groups
+              </Dropdown.Item>
+            </Dropdown.Menu>
+          </Dropdown.Item>
+
+          <Dropdown.Item>
+            <Icon name='dropdown' />
+            <span className='text'>Employment</span>
+            <Dropdown.Menu>
+              <Dropdown.Item
+                as={Link}
+                to='/basic/employment/individual'
+              >
+                Individual
+              </Dropdown.Item>
+              <Dropdown.Item
+                as={Link}
+                to='/basic/employment/grouped'
+              >
+                Group
+              </Dropdown.Item>
+            </Dropdown.Menu>
+          </Dropdown.Item>
+
+        </Dropdown.Menu>
+      </Dropdown>
+
+      <Menu.Item>
+        <Input icon='search' placeholder='Search Jobs...' />
+      </Menu.Item>
+
+      <Menu.Menu position='right'>
+        <Menu.Item
+          as={Link}
+          to='/auth/login'
+          name='login'
+        />
+      </Menu.Menu>
+
+    </Menu>
   )
 }
 

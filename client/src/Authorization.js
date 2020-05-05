@@ -11,7 +11,6 @@ const Authorization = ({isAuthenticated, children, dispatch, ...rest}) => {
   const [loaded, setLoaded] = useState(false)
 
   const validateOnLoad = () => {
-    console.log(`Validating Client Token: ${isAuthenticated ? 'false' : 'true'}`)
     if(isAuthenticated){
       setLoaded(true)
     } else {

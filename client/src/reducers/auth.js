@@ -68,7 +68,6 @@ export const validateUser = (cb = f => f) => {
   return (dispatch, getState) => {
     const path = `/api/session/renew`
     const token = localStorage.token
-    debugger
     if(token){
       axios({
         url: path,
