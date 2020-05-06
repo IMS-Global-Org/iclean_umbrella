@@ -6,6 +6,8 @@ defmodule IClean.Users.User do
   schema "users" do
     pow_user_fields()
 
+    has_one :employee, IClean.Employee
+
     timestamps()
   end
 end

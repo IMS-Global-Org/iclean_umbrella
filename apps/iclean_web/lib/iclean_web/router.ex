@@ -31,6 +31,6 @@ defmodule ICleanWeb.Router do
     pipe_through [:api, :api_protected]
 
     # Your protected API endpoints here
-    resources "/users", UsersController, except: [:new, :edit]
+    resources "/employees", EmployeesController, except: [:new, :edit]
   end
 end

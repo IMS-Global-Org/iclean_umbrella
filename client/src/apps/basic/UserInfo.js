@@ -1,14 +1,14 @@
 import React, {useEffect} from 'react'
 import { connect } from 'react-redux'
 import { isEmpty } from 'lodash'
-import { loadUser } from '../../reducers/user'
+import { loadEmployee } from '../../reducers/employee'
 
 const UserInfo  = ({user, access_token, dispatch, ...rest}) => {
 
   const loadUserInfo = () => {
     if(isEmpty(user)){
       console.log(`Access Token: ${access_token}`)
-      dispatch(loadUser(access_token))
+      dispatch(loadEmployee(access_token))
     }
   }
   useEffect(loadUserInfo, [])

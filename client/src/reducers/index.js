@@ -2,11 +2,11 @@ import { combineReducers } from 'redux'
 
 // Composed Reducers
 import { auth } from './auth'
-import { user } from './user'
+import { employee } from './employee'
 
 const rootReducer = combineReducers({
   auth,
-  user,
+  employee,
 })
 
 export default rootReducer

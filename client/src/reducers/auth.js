@@ -16,6 +16,7 @@ export const registerUser = (email, password, password_confirmation, history) =>
       password, 
       password_confirmation,
     }
+
     axios.post(path, { user })
       .then( res => {
         dispatch({ type: REGISTER_USER, auth: res.data });
@@ -33,6 +34,7 @@ export const loginUser = (email, password, history) => {
   return dispatch => {
     const path = `/api/session`
     const user = { email, password }
+
     axios.post(path, { user })
       .then( res => {
         dispatch({ type: LOGIN_USER, auth: res.data });
@@ -49,7 +51,7 @@ export const loginUser = (email, password, history) => {
 export const logoutUser = (history) => {
   return (dispatch, getState) => {
     const path = `/api/session`
-    const { access_token } = getState().auth.tokens()
+    const { access_token } = getState().auth.tokens
 
     axios({
       url: path,
@@ -68,10 +70,11 @@ export const logoutUser = (history) => {
   }
 }
 
-export const validateUser = (cb = f => f) => {
+export const validateUser = (history, cb = f => f) => {
   return (dispatch, getState) => {
     const path = `/api/session/renew`
-    const renewal_token = localStorage.renewal_token
+    const { renewal_token } = getState().auth.tokens
+
     if(renewal_token){
       axios({
         url: path,
@@ -85,9 +88,14 @@ export const validateUser = (cb = f => f) => {
           localStorage.setItem('renewal_token', res.data.renewal_token)
           localStorage.setItem('access_token', res.data.access_token)
         })
-        .catch(cb)
+        .catch(err => {
+          cb()
+          history.push('/auth/login');
+        })
+    } else {
+      cb()
+      history.push('/auth/login');
     }
-    cb()
   }
 }
 
@@ -112,20 +120,20 @@ const validateUserReducer = (state, action) => {
 const defaults = {
   access_token: '',
   renewal_token: '',
-  tokens: function(){
-    if(this.access_token && this.renewal_token){
-      return this
-    } else { // Pull from localStorage
-      return {
-        access_token: localStorage.access_token,
-        renewal_token: localStorage.renewal_token,
-      }
-    }
+  roles: [],
+  tokens: {
+    access_token: localStorage.access_token,
+    renewal_token: localStorage.renewal_token,
   },
   isAuthenticated: function(){
-    return this.access_token && this.renewal_token
+    const { access_token, renewal_token } = this.tokens
+    return access_token && renewal_token
+  },
+  hasRoleRights: function(routeRoles){
+    return routeRoles.every(role => this.roles.includes(role))
   }
 }
+
 
 // Actual Reducer
 export const auth = createReducer({...defaults}, {

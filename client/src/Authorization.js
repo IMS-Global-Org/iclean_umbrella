@@ -1,5 +1,6 @@
 import {useState, useEffect} from 'react'
 import { connect } from 'react-redux'
+import { useHistory } from 'react-router-dom'
 import { validateUser } from './reducers/auth'
 
 /**
@@ -9,12 +10,13 @@ import { validateUser } from './reducers/auth'
 const Authorization = ({isAuthenticated, children, dispatch, ...rest}) => {
   // Keeps the user status from being checked with every route change
   const [loaded, setLoaded] = useState(false)
+  const history = useHistory()
 
   const validateOnLoad = () => {
     if(isAuthenticated){
       setLoaded(true)
     } else {
-      dispatch(validateUser(() => setLoaded(true)))
+      dispatch(validateUser(history, () => setLoaded(true)))
     }
   }
   useEffect(validateOnLoad, [])
@@ -25,7 +27,7 @@ const Authorization = ({isAuthenticated, children, dispatch, ...rest}) => {
   }
   useEffect(validateOnChange, [isAuthenticated])
 
-  return loaded ? children : ''
+  return loaded && isAuthenticated ? children : ''
 }
 
 const mapStateToProps = (state, props) => {

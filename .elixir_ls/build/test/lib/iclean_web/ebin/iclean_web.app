@@ -9,6 +9,7 @@
                         'Elixir.ICleanWeb.Application',
                         'Elixir.ICleanWeb.ChannelCase',
                         'Elixir.ICleanWeb.ConnCase',
+                        'Elixir.ICleanWeb.EmployeesController',
                         'Elixir.ICleanWeb.Endpoint',
                         'Elixir.ICleanWeb.ErrorHelpers',
                         'Elixir.ICleanWeb.ErrorView',
@@ -17,8 +18,7 @@
                         'Elixir.ICleanWeb.Router',
                         'Elixir.ICleanWeb.Router.Helpers',
                         'Elixir.ICleanWeb.SessionController',
-                        'Elixir.ICleanWeb.UserSocket',
-                        'Elixir.ICleanWeb.UsersController']},
+                        'Elixir.ICleanWeb.UserSocket']},
               {registered,[]},
               {vsn,"0.1.0"},
               {mod,{'Elixir.ICleanWeb.Application',[]}}]}.
