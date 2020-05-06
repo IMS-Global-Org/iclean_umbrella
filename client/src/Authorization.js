@@ -30,7 +30,7 @@ const Authorization = ({isAuthenticated, children, dispatch, ...rest}) => {
 
 const mapStateToProps = (state, props) => {
   return { 
-    isAuthenticated: state.auth.access_token && state.auth.renewal_token
+    isAuthenticated: state.auth.isAuthenticated()
   }
 }
 

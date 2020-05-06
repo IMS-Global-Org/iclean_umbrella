@@ -3,9 +3,11 @@ defmodule ICleanWeb.UsersController do
 
   import Ecto.Query
   alias IClean.{Repo, User}
+  alias Pow.Plug
 
   def show(conn, _params) do
-    IO.inspect conn
+    current_user = Plug.current_user(conn)
+    require IEx; IEx.pry;
     json(conn, %{})
   end
 end

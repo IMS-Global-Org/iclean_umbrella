@@ -19,6 +19,8 @@ export const registerUser = (email, password, password_confirmation, history) =>
     axios.post(path, { user })
       .then( res => {
         dispatch({ type: REGISTER_USER, auth: res.data });
+        localStorage.setItem('renewal_token', res.data.renewal_token)
+        localStorage.setItem('access_token', res.data.access_token)
         history.push('/');
       })
       .catch( err => {
@@ -34,7 +36,8 @@ export const loginUser = (email, password, history) => {
     axios.post(path, { user })
       .then( res => {
         dispatch({ type: LOGIN_USER, auth: res.data });
-        localStorage.setItem('token', res.data.renewal_token)
+        localStorage.setItem('renewal_token', res.data.renewal_token)
+        localStorage.setItem('access_token', res.data.access_token)
         history.push('/basic');
       })
       .catch( err => {
@@ -46,7 +49,7 @@ export const loginUser = (email, password, history) => {
 export const logoutUser = (history) => {
   return (dispatch, getState) => {
     const path = `/api/session`
-    const { access_token } = getState().auth
+    const { access_token } = getState().auth.tokens()
 
     axios({
       url: path,
@@ -55,7 +58,8 @@ export const logoutUser = (history) => {
     })
       .then( res => {
         dispatch({ type: LOGOUT_USER });
-        localStorage.removeItem('token')
+        localStorage.removeItem('renewal_token')
+        localStorage.removeItem('access_token')
         history.push('/auth/login');
       })
       .catch( err => {
@@ -67,18 +71,19 @@ export const logoutUser = (history) => {
 export const validateUser = (cb = f => f) => {
   return (dispatch, getState) => {
     const path = `/api/session/renew`
-    const token = localStorage.token
-    if(token){
+    const renewal_token = localStorage.renewal_token
+    if(renewal_token){
       axios({
         url: path,
         method: 'POST',
         headers: {
-          'Authorization': token,
+          'Authorization': renewal_token,
         },
       })
         .then( res => {
           dispatch({ type: VALIDATE_USER, auth: res.data }) 
-          localStorage.setItem('token', res.data.renewal_token)
+          localStorage.setItem('renewal_token', res.data.renewal_token)
+          localStorage.setItem('access_token', res.data.access_token)
         })
         .catch(cb)
     }
@@ -107,6 +112,19 @@ const validateUserReducer = (state, action) => {
 const defaults = {
   access_token: '',
   renewal_token: '',
+  tokens: function(){
+    if(this.access_token && this.renewal_token){
+      return this
+    } else { // Pull from localStorage
+      return {
+        access_token: localStorage.access_token,
+        renewal_token: localStorage.renewal_token,
+      }
+    }
+  },
+  isAuthenticated: function(){
+    return this.access_token && this.renewal_token
+  }
 }
 
 // Actual Reducer
