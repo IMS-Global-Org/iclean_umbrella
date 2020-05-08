@@ -120,19 +120,28 @@ const validateUserReducer = (state, action) => {
 const defaults = {
   access_token: '',
   renewal_token: '',
-  roles: [],
+  role: '',
+  roles: ['guest', 'basic', 'admin', 'uber', 'super'],
   tokens: function(){
     return {
       access_token: localStorage.access_token,
       renewal_token: localStorage.renewal_token,
     }
   },
+  hasRenewalToken: function(){
+    return localStorage.renewal_token !== ''
+  },
   isAuthenticated: function(){
     const { access_token, renewal_token } = this.tokens()
     return access_token && renewal_token
   },
-  hasRoleRights: function(routeRoles){
-    return routeRoles.every(role => this.roles.includes(role))
+  hasRoleRights: function(role){
+    if(this.role){
+      const required_level = this.roles.findIndex(r => r === role)
+      const user_level = this.roles.findIndex(r => r === this.role)
+      return user_level >= required_level
+    }
+    return false
   }
 }
 

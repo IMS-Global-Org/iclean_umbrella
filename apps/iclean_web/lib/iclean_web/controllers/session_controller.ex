@@ -12,7 +12,8 @@ defmodule ICleanWeb.SessionController do
       {:ok, conn} ->
         json(conn, %{
           access_token: conn.private[:api_access_token], 
-          renewal_token: conn.private[:api_renewal_token]
+          renewal_token: conn.private[:api_renewal_token],
+          role: Pow.Plug.current_user(conn).role,
         })
 
       {:error, conn} ->
@@ -40,10 +41,11 @@ defmodule ICleanWeb.SessionController do
           message: "Invalid token"
         })
 
-      {conn, _user} ->
+      {conn, user} ->
         json(conn, %{
           access_token: conn.private[:api_access_token],
-          renewal_token: conn.private[:api_renewal_token]
+          renewal_token: conn.private[:api_renewal_token],
+          role: user.role,
         })
     end
   end

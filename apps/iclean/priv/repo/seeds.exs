@@ -17,21 +17,25 @@ default_users = [
     email: "super@iclean.com", 
     password: "password",
     confirm_password: "password",
+    role: "super",
   },
   %{ 
     email: "uber@iclean.com", 
     password: "password",
     confirm_password: "password",
+    role: "uber",
   },
   %{ 
     email: "basic@iclean.com",
     password: "password",
     confirm_password: "password",
+    role: "basic",
   },
   %{ 
     email: "guest@iclean.com",
     password: "password",
     confirm_password: "password",
+    role: "guest",
   },
 ]
 

@@ -7,32 +7,30 @@ import { validateUser } from './reducers/auth'
  * Checks to make sure the User status has been validated
  * when protected routes are visited.
  */
-const Authorization = ({isAuthenticated, children, dispatch, ...rest}) => {
+const Authorization = ({hasRenewalToken, children, dispatch, ...rest}) => {
   // Keeps the user status from being checked with every route change
   const [loaded, setLoaded] = useState(false)
   const history = useHistory()
 
   const validateOnLoad = () => {
-    if(isAuthenticated){
-      setLoaded(true)
-    } else {
+    if(hasRenewalToken){
       dispatch(validateUser(history, () => setLoaded(true)))
-    }
+    } 
   }
   useEffect(validateOnLoad, [])
 
   const validateOnChange = () => {
-    if (!loaded && isAuthenticated)
+    if (!loaded)
       setLoaded(true)
   }
-  useEffect(validateOnChange, [isAuthenticated])
+  useEffect(validateOnChange, [hasRenewalToken])
 
-  return loaded && isAuthenticated ? children : ''
+  return loaded ? children : ''
 }
 
 const mapStateToProps = (state, props) => {
   return { 
-    isAuthenticated: state.auth.isAuthenticated()
+    hasRenewalToken: state.auth.hasRenewalToken(),
   }
 }
 

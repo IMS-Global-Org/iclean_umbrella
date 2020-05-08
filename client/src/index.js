@@ -7,6 +7,7 @@ import axios from 'axios'
 import * as serviceWorker from './serviceWorker';
 
 import Authorization from './Authorization'
+import ProtectedRoute from './ProtectedRoute'
 import NoRoute from './NoRoute'
 import Auth from './apps/Auth'
 import Admin from './apps/Admin'
@@ -22,7 +23,9 @@ axios.interceptors.request.use(
   config => {
     if(localStorage.access_token){
       // Don't override the defaults or any that are set in the reducer actions
-      config.headers.Authorization = localStorage.access_token
+      if(config.headers.Authorization !== localStorage.renewal_token){
+        config.headers.Authorization = localStorage.access_token
+      }
     }
     return config
   },
@@ -54,10 +57,10 @@ ReactDOM.render(
       <Authorization>
         <Switch>
           <Route exact path='/' component={Guest} />
-          <Route path='/auth' component={Auth} />
-          <Route path='/admin' component={Admin} />
-          <Route path='/basic' component={Basic} />
           <Route path='/guest' component={Guest} />
+          <Route path='/auth' component={Auth} />
+          <ProtectedRoute role={'basic'} path='/basic' component={Basic} />
+          <ProtectedRoute role={'admin'} path='/admin' component={Admin} />
           <Route component={NoRoute} />
         </Switch>
       </Authorization>
