@@ -1,8 +1,8 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
-import { connect } from 'react-redux'
 import { Menu, Dropdown, Icon, Input } from 'semantic-ui-react'
 import styled from 'styled-components'
+import { isAuthenticated } from '../../reducers/auth'
 
 const BasicMenu = styled(Menu)`
   margin-left: 1rem;
@@ -10,7 +10,7 @@ const BasicMenu = styled(Menu)`
 `
 
 
-const BasicAppBar = ({isAuthenticated, ...rest}) => {
+const BasicAppBar = ({...rest}) => {
 
   return (
     <BasicMenu secondary>
@@ -63,7 +63,7 @@ const BasicAppBar = ({isAuthenticated, ...rest}) => {
       </Menu.Item>
 
       <Menu.Menu position='right'>
-        {isAuthenticated ? (
+        {isAuthenticated() ? (
           <Menu.Item
             as={Link}
             to='/auth/logout'
@@ -82,10 +82,4 @@ const BasicAppBar = ({isAuthenticated, ...rest}) => {
   )
 }
 
-const mapStateToProps = (state, props) => {
-  return {
-    isAuthenticated: state.auth.isAuthenticated(),
-  }
-}
-
-export default connect(mapStateToProps)(BasicAppBar)
+export default BasicAppBar

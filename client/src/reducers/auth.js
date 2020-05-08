@@ -1,6 +1,22 @@
 import createReducer from './createReducer'
 import axios from 'axios'
 
+const setLocalStorage = ({access_token, renewal_token, role}) => {
+  localStorage.setItem('access_token', access_token)
+  localStorage.setItem('renewal_token', renewal_token)
+  localStorage.setItem('role', role)
+}
+
+const clearLocalStorage = (cb = f => f) => {
+  localStorage.removeItem('access_token')
+  localStorage.removeItem('renewal_token')
+  localStorage.removeItem('role')
+  cb()
+}
+
+
+const defaultRoles = ['guest', 'basic', 'admin', 'uber', 'super']
+
 // Constants
 const REGISTER_USER = 'REGISTER_USER'
 const LOGIN_USER = 'LOGIN_USER'
@@ -19,9 +35,8 @@ export const registerUser = (email, password, password_confirmation, history) =>
 
     axios.post(path, { user })
       .then( res => {
+        setLocalStorage(res.data)
         dispatch({ type: REGISTER_USER, auth: res.data });
-        localStorage.setItem('renewal_token', res.data.renewal_token)
-        localStorage.setItem('access_token', res.data.access_token)
         history.push('/');
       })
       .catch( err => {
@@ -37,9 +52,8 @@ export const loginUser = (email, password, history) => {
 
     axios.post(path, { user })
       .then( res => {
+        setLocalStorage(res.data)
         dispatch({ type: LOGIN_USER, auth: res.data });
-        localStorage.setItem('renewal_token', res.data.renewal_token)
-        localStorage.setItem('access_token', res.data.access_token)
         history.push('/basic');
       })
       .catch( err => {
@@ -48,108 +62,88 @@ export const loginUser = (email, password, history) => {
   }
 }
 
-export const logoutUser = (history) => {
+export const logoutUser = (history = '') => {
   return (dispatch, getState) => {
     const path = `/api/session`
-    const { access_token } = getState().auth.tokens()
 
-    axios({
-      url: path,
-      method: 'DELETE',
-      headers: { 'Authorization': access_token }
-    })
+    axios.delete(path)
       .then( res => {
+        clearLocalStorage()
         dispatch({ type: LOGOUT_USER });
-        localStorage.removeItem('renewal_token')
-        localStorage.removeItem('access_token')
-        history.push('/auth/login');
+        history && history.push('/auth/login')
       })
-      .catch( err => {
-        console.log(err.response.data)
-      });
   }
 }
 
 export const validateUser = (history, cb = f => f) => {
   return (dispatch, getState) => {
     const path = `/api/session/renew`
-    const { renewal_token } = getState().auth.tokens()
-
+    const renewal_token = localStorage.renewal_token
     if(renewal_token){
-      axios({
-        url: path,
-        method: 'POST',
-        headers: {
-          'Authorization': renewal_token,
-        },
+      clearLocalStorage(() => {
+        axios({
+          url: path,
+          method: 'POST',
+          headers: {
+            'Authorization': renewal_token,
+          },
+        })
+          .then( res => {
+            setLocalStorage(res.data)
+            cb()
+            dispatch({ type: VALIDATE_USER, auth: res.data }) 
+          })
+          .catch(err => {
+            cb()
+            history.push('/auth/login');
+          })
       })
-        .then( res => {
-          dispatch({ type: VALIDATE_USER, auth: res.data }) 
-          localStorage.setItem('renewal_token', res.data.renewal_token)
-          localStorage.setItem('access_token', res.data.access_token)
-        })
-        .catch(err => {
-          cb()
-          history.push('/auth/login');
-        })
     } else {
       cb()
-      history.push('/auth/login');
     }
   }
 }
 
+export const tokens = () => {
+  return {
+    access_token: localStorage.access_token,
+    renewal_token: localStorage.renewal_token,
+  }
+}
+
+export const hasRenewalToken = () => {
+  return localStorage.renewal_token !== ''
+}
+
+export const isAuthenticated = () => {
+  return (localStorage.access_token && localStorage.renewal_token) ? true : false
+}
+
+export const hasRoleRights = (permission) => {
+  const role = localStorage.role
+  if(role){
+    const required_level = defaultRoles.findIndex(r => r === permission)
+    const user_level = defaultRoles.findIndex(r => r === role)
+    return user_level >= required_level
+  }
+  return false
+}
+
 // Reducers
-const registerUserReducer = (state, action) => {
-  return {...state, ...action.auth}
-}
-
-const loginUserReducer = (state, action) => {
-  return {...state, ...action.auth}
-}
-
-const logoutUserReducer = (state, action) => {
-  return {...defaults}
-}
-
-const validateUserReducer = (state, action) => {
+const loadAuthData = (state, action) => {
   return {...state, ...action.auth}
 }
 
 // Default attributes
 const defaults = {
-  access_token: '',
-  renewal_token: '',
   role: '',
-  roles: ['guest', 'basic', 'admin', 'uber', 'super'],
-  tokens: function(){
-    return {
-      access_token: localStorage.access_token,
-      renewal_token: localStorage.renewal_token,
-    }
-  },
-  hasRenewalToken: function(){
-    return localStorage.renewal_token !== ''
-  },
-  isAuthenticated: function(){
-    const { access_token, renewal_token } = this.tokens()
-    return access_token && renewal_token
-  },
-  hasRoleRights: function(role){
-    if(this.role){
-      const required_level = this.roles.findIndex(r => r === role)
-      const user_level = this.roles.findIndex(r => r === this.role)
-      return user_level >= required_level
-    }
-    return false
-  }
 }
 
 
 // Actual Reducer
 export const auth = createReducer({...defaults}, {
-  [REGISTER_USER]: registerUserReducer,
-  [LOGIN_USER]: loginUserReducer,
-  [LOGOUT_USER]: logoutUserReducer,
-  [VALIDATE_USER]: validateUserReducer,
+  [LOGIN_USER]: loadAuthData,
+  [LOGOUT_USER]: loadAuthData,
+  [VALIDATE_USER]: loadAuthData,
+  [REGISTER_USER]: loadAuthData,
 })

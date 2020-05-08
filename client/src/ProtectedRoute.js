@@ -1,30 +1,20 @@
 import React from 'react';
 import { Route, Redirect } from 'react-router-dom';
-import { connect } from 'react-redux';
+import { isAuthenticated, hasRoleRights } from './reducers/auth'
 
-const ProtectedRoute = ({
-  isAuthenticated,
-  hasRoleRights, 
-  component: Component, 
-  ...rest
-}) => (
-  <Route {...rest} render={props => (
-    isAuthenticated && hasRoleRights ? (
-      <Component {...props}/>
-     ) : (
-       <Redirect to={{
-         pathname: '/auth/login',
-         state: { from: props.location }
-       }}/>
-     )
-  )}/>
-)
-
-const mapStateToProps = (state, props) => {
-  return { 
-    isAuthenticated: state.auth.isAuthenticated(),
-    hasRoleRights: state.auth.hasRoleRights(props.roles),
-  }
+const ProtectedRoute = ({component: Component, ...rest}) => {
+  return (
+    <Route {...rest} render={props => (
+      (isAuthenticated() && hasRoleRights()) ? (
+        <Component {...props}/>
+       ) : (
+         <Redirect to={{
+           pathname: '/auth/login',
+           state: { from: props.location }
+         }}/>
+       )
+    )}/>
+  )
 }
 
-export default connect(mapStateToProps)(ProtectedRoute);
+export default ProtectedRoute;
