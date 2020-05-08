@@ -51,7 +51,7 @@ export const loginUser = (email, password, history) => {
 export const logoutUser = (history) => {
   return (dispatch, getState) => {
     const path = `/api/session`
-    const { access_token } = getState().auth.tokens
+    const { access_token } = getState().auth.tokens()
 
     axios({
       url: path,
@@ -73,7 +73,7 @@ export const logoutUser = (history) => {
 export const validateUser = (history, cb = f => f) => {
   return (dispatch, getState) => {
     const path = `/api/session/renew`
-    const { renewal_token } = getState().auth.tokens
+    const { renewal_token } = getState().auth.tokens()
 
     if(renewal_token){
       axios({
@@ -121,12 +121,14 @@ const defaults = {
   access_token: '',
   renewal_token: '',
   roles: [],
-  tokens: {
-    access_token: localStorage.access_token,
-    renewal_token: localStorage.renewal_token,
+  tokens: function(){
+    return {
+      access_token: localStorage.access_token,
+      renewal_token: localStorage.renewal_token,
+    }
   },
   isAuthenticated: function(){
-    const { access_token, renewal_token } = this.tokens
+    const { access_token, renewal_token } = this.tokens()
     return access_token && renewal_token
   },
   hasRoleRights: function(routeRoles){

@@ -5,6 +5,7 @@
               {modules,['Elixir.IClean','Elixir.IClean.Application',
                         'Elixir.IClean.DataCase','Elixir.IClean.Employee',
                         'Elixir.IClean.Repo','Elixir.IClean.Users.User',
+                        'Elixir.Jason.Encoder.IClean.Employee',
                         'Elixir.Jason.Encoder.IClean.Users.User']},
               {registered,[]},
               {vsn,"0.1.0"},

@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom';
 import { BrowserRouter, Switch, Route } from 'react-router-dom'
 import { Provider } from 'react-redux'
 import store from './store'
+import axios from 'axios'
 import * as serviceWorker from './serviceWorker';
 
 import Authorization from './Authorization'
@@ -14,6 +15,38 @@ import Guest from './apps/Guest'
 
 import 'semantic-ui-css/semantic.min.css'
 
+/**
+ * Set axios Intercepters for both requests and responses
+ */
+axios.interceptors.request.use(
+  config => {
+    if(localStorage.access_token){
+      // Don't override the defaults or any that are set in the reducer actions
+      config.headers.Authorization = localStorage.access_token
+    }
+    return config
+  },
+  error => {
+    // TODO display as a flash message
+    const response = error.response
+    if(response.status === 422){
+      return false
+    }
+    return Promise.reject(error)
+  }
+)
+
+axios.interceptors.response.use(
+  response => response,
+  error => {
+    // TODO display as a flash message
+    const response = error.response
+    if(response.status === 422){
+      return false
+    }
+    return Promise.reject(error)
+  }
+)
 
 ReactDOM.render(
   <Provider store={store}>

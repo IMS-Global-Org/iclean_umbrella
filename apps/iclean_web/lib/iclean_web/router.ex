@@ -32,5 +32,6 @@ defmodule ICleanWeb.Router do
 
     # Your protected API endpoints here
     resources "/employees", EmployeesController, except: [:new, :edit]
+    get "/employee/active", EmployeesController, :employee_active
   end
 end

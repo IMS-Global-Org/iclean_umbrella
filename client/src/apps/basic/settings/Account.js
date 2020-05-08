@@ -1,61 +1,93 @@
 import React, { useState, useEffect } from 'react'
 import { connect } from 'react-redux'
-import { loadEmployee } from '../../../reducers/employee'
-import { Form } from 'semantic-ui-react'
+import { 
+  loadCurrentEmployee,
+  createCurrentEmployee,
+  updateCurrentEmployee,
+  deleteCurrentEmployee,
+} from '../../../reducers/employee'
+import { Form, Button } from 'semantic-ui-react'
+import { isEmpty } from 'lodash'
 
 const defaults = {
-  firstName: '',
-  middleName: '',
-  lastName1: '',
-  lastName2: '',
-  dateOfBirth: '',
+  id: '',
+  first_name: '',
+  middle_name: '',
+  last_name1: '',
+  last_name2: '',
+  date_of_birth: '',
 }
 
-const Account = ({user, dispatch, ...rest}) => {
+const Account = ({employee, dispatch, ...rest}) => {
   const [state, setState] = useState({...defaults})
 
   const loadBasicAccount = () => {
-    dispatch(loadEmployee())
+    dispatch(loadCurrentEmployee())
   }
   useEffect(loadBasicAccount, [])
 
   const updateBasicAccount = () => {
-    if(user){
+    if(!isEmpty(employee)){
+      Object.entries(employee).forEach(([key, val]) => {
+        if(!val){
+          delete employee[key]
+        }
+      })
       setState(state => ({
         ...state,
-        ...user
+        ...employee,
       }))
+    } else {
+      setState({...defaults})
     }
   }
-  useEffect(updateBasicAccount, [user])
+  useEffect(updateBasicAccount, [employee])
 
   const onChange = ({target: {name, value}}) =>
     setState(state => ({...state, [name]: value}))
 
+  const onClear = () => setState({...defaults})
+
+  const onSubmit = (e) => {
+    e.preventDefault()
+    if(state.id){
+      dispatch(updateCurrentEmployee(state))
+    } else {
+      dispatch(createCurrentEmployee(state))
+    }
+  }
+
+  const onDelete = () => {
+    if(state.id){
+      // TODO show verification popup
+      dispatch(deleteCurrentEmployee(state))
+    }
+  }
+
   return (
-    <Form>
+    <Form onSubmit={onSubmit}>
       <Form.Group>
         <Form.Input 
           width={6}
           required={true}
           label='First Name'
-          name='firstName'
-          value={state.firstName}
+          name='first_name'
+          value={state.first_name}
           onChange={onChange}
         />
         <Form.Input 
           width={4}
           label='Middle Name'
-          name='middleName'
-          value={state.middleName}
+          name='middle_name'
+          value={state.middle_name}
           onChange={onChange}
         />
         <Form.Input
           width={6}
           required={true}
           label='Last Name'
-          name='lastName1'
-          value={state.lastName1}
+          name='last_name1'
+          value={state.last_name1}
           onChange={onChange}
         />
       </Form.Group>
@@ -65,18 +97,23 @@ const Account = ({user, dispatch, ...rest}) => {
           required={true}
           type='date'
           label='Date of Birth'
-          name='dateOfBirth'
-          value={state.dateOfBirth}
+          name='date_of_birth'
+          value={state.date_of_birth}
           onChange={onChange}
         />
       </Form.Group>
+      <Button.Group floated='right'>
+        <Button type='button' onClick={onClear}>Clear</Button>
+        <Button type='submit'>Submit</Button>
+        <Button type='button' negative onClick={onDelete}>Delete</Button>
+      </Button.Group>
     </Form>
   )
 }
 
 const mapStateToProps = (state, props) => {
   return {
-    user: state.user,
+    employee: state.employee,
   }
 }
 
