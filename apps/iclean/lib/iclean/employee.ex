@@ -19,6 +19,14 @@ defmodule IClean.Employee do
 
     belongs_to :user, IClean.Users.User
 
+    many_to_many :addresses,
+      IClean.Address,
+      join_through: "employees_addresses"
+
+    many_to_many :employments,
+      IClean.Employment,
+      join_through: "employees_employments"
+
     timestamps()
   end
 

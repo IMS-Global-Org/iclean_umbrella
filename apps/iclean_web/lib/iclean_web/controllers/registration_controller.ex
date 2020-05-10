@@ -10,10 +10,11 @@ defmodule ICleanWeb.RegistrationController do
     conn
     |> Pow.Plug.create_user(user_params)
     |> case do
-      {:ok, _user, conn} ->
+      {:ok, user, conn} ->
         json(conn, %{
           access_token: conn.private[:api_access_token], 
-          renewal_token: conn.private[:api_renewal_token]
+          renewal_token: conn.private[:api_renewal_token],
+          role: user.role,
         })
 
       {:error, changeset, conn} ->

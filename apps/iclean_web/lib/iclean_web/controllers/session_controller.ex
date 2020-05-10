@@ -29,7 +29,6 @@ defmodule ICleanWeb.SessionController do
   @spec renew(Conn.t(), map()) :: Conn.t()
   def renew(conn, _params) do
     config = Pow.Plug.fetch_config(conn)
-    IO.inspect config
     conn
     |> APIAuthPlug.renew(config)
     |> case do
