@@ -7,7 +7,7 @@ defmodule IClean.Employer do
     field :organization, :string
     field :type, :string
 
-    has_many :employments, IClean.Employments 
+    has_many :employments, IClean.Employment
 
     many_to_many :addresses,
       IClean.Address,

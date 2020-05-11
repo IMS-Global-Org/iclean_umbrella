@@ -3,8 +3,8 @@ defmodule IClean.Repo.Migrations.CreateEmployments do
 
   def change do
     create table(:employments) do
-      add :start_at, :utc_datetime
-      add :end_at, :utc_datetime
+      add :start_at, :date
+      add :end_at, :date
       add :description, :string
       add :salary, :float
       add :crew_size, :integer

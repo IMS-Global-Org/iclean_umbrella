@@ -6,15 +6,13 @@ defmodule IClean.Employee do
     :id,
     :first_name, 
     :middle_name,
-    :last_name1,
-    :last_name2,
+    :last_name,
     :date_of_birth,
   ]}
   schema "employees" do
     field :date_of_birth, :date
     field :first_name, :string
-    field :last_name1, :string
-    field :last_name2, :string
+    field :last_name, :string
     field :middle_name, :string
 
     belongs_to :user, IClean.Users.User
@@ -34,8 +32,7 @@ defmodule IClean.Employee do
   def changeset(employee, attrs) do
     employee
     |> cast(attrs, [
-      :first_name, :middle_name, :last_name1, 
-      :last_name2, :date_of_birth])
-    |> validate_required([:first_name, :last_name1, :date_of_birth])
+      :first_name, :middle_name, :last_name, :date_of_birth])
+    |> validate_required([:first_name, :last_name, :date_of_birth])
   end
 end

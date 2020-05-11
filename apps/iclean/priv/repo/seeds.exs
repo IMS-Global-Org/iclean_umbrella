@@ -10,37 +10,10 @@
 # We recommend using the bang functions (`insert!`, `update!`
 # and so on) as they will fail if something goes wrong.
 
-alias IClean.{Repo, Users.User}
-
-default_users = [
-  %{ 
-    email: "super@iclean.com", 
-    password: "password",
-    confirm_password: "password",
-    role: "super",
-  },
-  %{ 
-    email: "uber@iclean.com", 
-    password: "password",
-    confirm_password: "password",
-    role: "uber",
-  },
-  %{ 
-    email: "basic@iclean.com",
-    password: "password",
-    confirm_password: "password",
-    role: "basic",
-  },
-  %{ 
-    email: "guest@iclean.com",
-    password: "password",
-    confirm_password: "password",
-    role: "guest",
-  },
-]
-
-default_users
-|> Enum.each(fn user -> 
-  changeset = User.changeset(%User{}, user)
-  Repo.insert!(changeset) 
-end)
+Code.require_file("./seeds/users.exs", __DIR__)
+Code.require_file("./seeds/employer.exs", __DIR__)
+Code.require_file("./seeds/equipment.exs", __DIR__)
+Code.require_file("./seeds/material.exs", __DIR__)
+Code.require_file("./seeds/warning.exs", __DIR__)
+Code.require_file("./seeds/employment.exs", __DIR__)
+Code.require_file("./seeds/employee.exs", __DIR__)
