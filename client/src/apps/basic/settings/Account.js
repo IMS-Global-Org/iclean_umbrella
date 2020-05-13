@@ -13,8 +13,7 @@ const defaults = {
   id: '',
   first_name: '',
   middle_name: '',
-  last_name1: '',
-  last_name2: '',
+  last_names: '',
   date_of_birth: '',
 }
 
@@ -85,9 +84,9 @@ const Account = ({employee, dispatch, ...rest}) => {
         <Form.Input
           width={6}
           required={true}
-          label='Last Name'
-          name='last_name1'
-          value={state.last_name1}
+          label='Last Names'
+          name='last_names'
+          value={state.last_names}
           onChange={onChange}
         />
       </Form.Group>

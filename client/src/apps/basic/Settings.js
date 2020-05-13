@@ -34,8 +34,8 @@ const Settings = ({...rest}) => {
             <Menu.Item
               as={Link}
               to='/basic/settings/account'
-              name='account'
-              active={active === 'account'}
+              name='profile'
+              active={active === 'profile'}
               onClick={onClick}
             />
             <Menu.Item

@@ -25,7 +25,7 @@ const BasicAppBar = ({...rest}) => {
                 as={Link}
                 to='/basic/settings/account'
               >
-                Account
+                Profile
               </Dropdown.Item>
               <Dropdown.Item
                 as={Link}

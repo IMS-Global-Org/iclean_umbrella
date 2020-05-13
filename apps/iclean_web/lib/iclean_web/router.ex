@@ -30,8 +30,12 @@ defmodule ICleanWeb.Router do
   scope "/api", ICleanWeb do
     pipe_through [:api, :api_protected]
 
-    # Your protected API endpoints here
+    # Employee Routes
     resources "/employees", EmployeesController, except: [:new, :edit]
     get "/employee/active", EmployeesController, :employee_active
+
+    # Employment Routes
+    resources "/employment", EmploymentController, except: [:new, :edit]
+    post "/employment/search", EmploymentController, :search
   end
 end
